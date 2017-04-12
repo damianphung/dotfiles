@@ -1,2 +1,2 @@
-1. run apt.sh
+1. run sudo --user=$USERNAME ./install.sh
 2. open vim ; :PlugInstall

@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+sudo apt update
+sudo apt upgrade
+
+# Essentials
+sudo apt install -y \
+    build-essential \
+    clang \
+    curl \
+    cmake \
+    doxygen \
+    exuberant-ctags \
+    gdb \
+    git \
+    gnupg \
+    golang-go \
+    gparted \
+    htop \
+    lcov \
+    lldb \
+    lm-sensors \
+    nfs-common \
+    nodejs \
+    python \
+    python-pip \
+    python3 \
+    python3-pip \
+    shellcheck \
+    silversearcher-ag \
+    tmux \
+    tree \
+    vim \
+    xz-utils \
+    flake8 \
+    pylint \
+    libreadline6-dev \
+    python3-dev \
+    python3-setuptools \
+    python3-yaml \
+    zsh
+sudo npm install -g jslint
+sudo ln -fs /usr/bin/node{js,}
+
+if ! [ -f "$HOME/.vim/autoload/plug.vim" ]; then
+    mkdir -p "$HOME/.vim/autoload"
+    mkdir -p "$HOME/.vim/plugged"
+    curl -fLo "$HOME/.vim/autoload/plug.vim" "https://raw.github.com/junegunn/vim-plug/master/plug.vim"
+fi
+
+git clone "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm"
+cp -vf ./dotfiles/\.* "$HOME/"
+cp -vf ./tmux_workspace/* "$HOME/.tmux/"
+cp -vf "tmux.terminfo" "$HOME/tmux.terminfo"
+sudo tic -x $HOME/tmux.terminfo
+
+# install zsh
+sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+# Themes for zsh
+git clone https://github.com/powerline/fonts.git
+# install
+cd fonts
+./install.sh
+# clean-up a bit
+cd ..
+rm -rf fonts
+cp -vf ./zshrc/.zshrc "$HOME/"
+
+
+# Pass --full argument to this script for a "full" install
+if [ "$1" = "--full" ]; then
+    # Developer packages
+    sudo apt install -y \
+        bzip2 \
+        libatk1.0-dev \
+        libbonoboui2-dev \
+        libboost-all-dev \
+        libgnome2-dev \
+        libgnomeui-dev \
+        libgtk2.0-dev \
+        liblzma-dev \
+        libncurses5-dev \
+        libsqlite3-dev \
+        libx11-dev \
+        libxml2-dev \
+        libxpm-dev \
+        libxt-dev \
+        python-dev \
+        python3-dev \
+        ruby-dev \
+        uuid-dev
+fi
+
+vim -c "PlugInstall"
+
+/bin/cat exports/less_settings >> ~/.bashrc
+/bin/cat exports/less_settings >> ~/.zshrc
+
+echo "All done!"
+echo "Note: Change terminal setting to use Ubuntu Mono derivative Powerline Regular / equivalent for mobaxterm to get fonts working if you are ssh-ing to this remote machine"

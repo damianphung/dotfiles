@@ -1,0 +1,2 @@
+1. run apt.sh
+2. open vim ; :PlugInstall

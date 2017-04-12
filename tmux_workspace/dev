@@ -1,0 +1,12 @@
+#!/usr/bin/tmux source-file
+
+# new-window [-adkP] [-c start-directory] [-F format] [-n window-name] [-t target-window] [shell-command]
+#new-session -s "dev"
+new-window -n "devwindow"
+select-pane -t 0 # select the first (0) pane
+split-window -v -p 20 # split it into two halves
+select-pane -t 0 # select the new, second (1) pane
+#split-window -h -p 20 # split it into two halves
+select-pane -t 0 # go back to the first pane
+
+attach

@@ -1,0 +1,15 @@
+
+#!/usr/bin/tmux source-file
+
+# new-window [-adkP] [-c start-directory] [-F format] [-n window-name] [-t target-window] [shell-command]
+new-window -n "devices"
+select-pane -t 0 # select the first (0) pane
+split-window -v -p 50 # split it into two halves
+select-pane -t 0 # select the new, second (1) pane
+split-window -h -p 50 # split it into two halves
+
+select-pane -t 2 # select the new, third (2) pane
+split-window -h -p 50 # split it into two halves
+select-pane -t 0 # go back to the first pane
+
+attach

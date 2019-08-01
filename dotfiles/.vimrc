@@ -2,18 +2,13 @@
 
 " #start plugins -------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
+
+" Add on top of universal c-tags
 Plug 'majutsushi/tagbar'
-Plug 'scrooloose/syntastic'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/DoxygenToolkit.vim'
-Plug 'mhinz/vim-signify'
-Plug 'tpope/vim-fugitive'
 
 " Colour themes
 Plug 'joshdick/onedark.vim'
 Plug 'nanotech/jellybeans.vim'
-Plug 'neilhwatson/vim_cf3', { 'for' : 'cf' }
 
 " Airline
 Plug 'vim-airline/vim-airline'
@@ -23,25 +18,22 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
 Plug 'junegunn/fzf.vim'
 
+" debugger UI toolkit
 Plug 'snare/voltron', { 'do' : './install.sh -u' }
-" On demand plugins
+
+" Formatting of cpp
 Plug 'rhysd/vim-clang-format', {'for': 'cpp'}
-" Doxygen
+
+" Doxygen ; :Dox to activate
 Plug 'vim-scripts/DoxygenToolkit.vim', { 'for': 'cpp' }
 " cpp highlighting
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
-" Golang
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries', 'for': 'go' }
-" Track the engine.
-Plug 'SirVer/ultisnips'
-" Snippets are separated from the engine. Add this if you want them:
-Plug 'honza/vim-snippets'
 
 " YouCompleteMe
 " if has("python")
 function! BuildYCM(info)
   if a:info.status == 'installed' || a:info.force
-    !./install.py --clang-completer  --gocode-completer --tern-completer
+    !./install.py --clang-completer --tern-completer
   endif
 endfunction
 
@@ -63,13 +55,19 @@ nnoremap <silent> <Tab> :bnext!<CR>
 " Shift Tab to cycle backwards
 nnoremap <silent> <S-Tab> :bprevious!<CR>
 " Ctrl-w to remove current buffer
-nnoremap <silent> <C-w> :bd<CR>
+"nnoremap <silent> <C-w> :bd<CR>
+"
+nnoremap <C-Left> :resize -10<CR>
+nnoremap <C-Right> :resize 10<CR>
+nnoremap <C-Up> :vertical resize 10<CR>
+nnoremap <C-Down> :vertical resize -10<CR>
 
 " '\' to Ag
 nnoremap \ :Ag<SPACE>
 
 filetype plugin indent on       " Enable file type support
-set completeopt-=preview
+set completeopt-=preview   " don't show preview window
+
 set colorcolumn=80
 set showcmd                     " Show current command
 set showmode                    " Show current mode
@@ -105,17 +103,8 @@ cnoreabbrev W w
 cnoreabbrev Q q
 command! Qa :qa!
 
-
-" Spell checking
-set spelllang=en_us             " Default language
-set complete+=kspell            " Word completion
-map <F7> :setlocal spell!<CR>   " Toggle spell check
-
 " Ctags
 set tags=tags
-
-" Doxygen
-autocmd Filetype c,cpp set comments^=:///
 
 syntax on
 colorscheme onedark
@@ -134,9 +123,6 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
-
-" Signify
-let g:signify_vcs_list = [ 'git', 'hg', 'svn' ]
 
 "FZF
 nnoremap <silent> <C-p> :Files<CR>
@@ -187,12 +173,9 @@ let g:ycm_filetype_blacklist={
             \}
 "
 " YouCompleteMe Omni-Completion
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 
 " YouCompleteMe key bindings
 nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
@@ -205,50 +188,22 @@ nnoremap <silent> <Leader>yg :YcmCompleter GoTo<CR>
 nnoremap <silent> <Leader>yi :YcmCompleter GoToInclude<CR>
 nnoremap <silent> <Leader>yt :YcmCompleter GetType<CR>
 
-python3 << EOF
-import sys, vim, os
+" python3 << EOF
+" import sys, vim, os
 
-ve_dir = vim.eval('$VIRTUAL_ENV')
-ve_dir in sys.path or sys.path.insert(0, ve_dir)
-activate_this = os.path.join(os.path.join(ve_dir, 'bin'), 'activate_this.py')
-EOF
+" ve_dir = vim.eval('$VIRTUAL_ENV')
+" ve_dir in sys.path or sys.path.insert(0, ve_dir)
+" activate_this = os.path.join(os.path.join(ve_dir, 'bin'), 'activate_this.py')
+" EOF
 
 " AutoFormat
 let g:formatdef_clangformat='"clang-format -style=file"'
 
-" Doxygen
-let g:DoxygenToolkit_commentType = "C++"
-
-" Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_aggregate_errors = 1
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_auto_loc_list=1
-let g:syntastic_check_on_open=1
-let g:syntastic_check_on_wq = 0
-
-" Syntastic Checkers
-let g:syntastic_cpp_checkers=['cppcheck']
-let g:syntastic_javascript_checkers = ['jshint']
-"let g:syntastic_python_checkers=['pylint']
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_python_flake8_args = '--ignore="E501,E302,E261,E701,E241,E126,E127,E128,W801"'
-
-"snippets
-let g:UltiSnipsExpandTrigger="<C-Space>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
-" disable syntastic errors
-silent! nmap <F6> :SyntasticToggleMode<CR>
-
 " Get off my lawn
-nnoremap <Left> :echoe "<- Use h"<CR>
-nnoremap <Right> :echoe "-> Use l"<CR>
-nnoremap <Up> :echoe "^ Use k"<CR>
-nnoremap <Down> :echoe "v Use j"<CR>
+"nnoremap <Left> :echoe "<- Use h"<CR>
+"nnoremap <Right> :echoe "-> Use l"<CR>
+"nnoremap <Up> :echoe "^ Use k"<CR>
+"nnoremap <Down> :echoe "v Use j"<CR>
 
 " Italics
 highlight Comment cterm=italic

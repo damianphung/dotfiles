@@ -14,16 +14,9 @@ sudo apt install -y \
     gdb \
     git \
     gnupg \
-    golang-go \
     gparted \
     htop \
-    lcov \
-    lldb \
-    lm-sensors \
-    nfs-common \
     nodejs \
-    python \
-    python-pip \
     python3 \
     python3-pip \
     shellcheck \
@@ -31,13 +24,10 @@ sudo apt install -y \
     tmux \
     tree \
     vim \
-    xz-utils \
-    flake8 \
-    pylint \
     libreadline6-dev \
+    python-dev \
     python3-dev \
     python3-setuptools \
-    python3-yaml \
     zsh
 sudo npm install -g jslint
 sudo ln -fs /usr/bin/node{js,}
@@ -72,23 +62,11 @@ if [ "$1" = "--full" ]; then
     # Developer packages
     sudo apt install -y \
         bzip2 \
-        libatk1.0-dev \
-        libbonoboui2-dev \
         libboost-all-dev \
-        libgnome2-dev \
-        libgnomeui-dev \
-        libgtk2.0-dev \
-        liblzma-dev \
         libncurses5-dev \
         libsqlite3-dev \
-        libx11-dev \
-        libxml2-dev \
-        libxpm-dev \
-        libxt-dev \
         python-dev \
-        python3-dev \
-        ruby-dev \
-        uuid-dev
+        python3-dev
 fi
 
 vim -c "PlugInstall"

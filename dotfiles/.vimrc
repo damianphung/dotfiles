@@ -104,7 +104,8 @@ cnoreabbrev Q q
 command! Qa :qa!
 
 " Ctags
-set tags=tags
+nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages<CR>
+set tags=$VIRTUAL_ENV/tags
 
 syntax on
 colorscheme onedark

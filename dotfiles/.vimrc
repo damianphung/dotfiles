@@ -29,16 +29,9 @@ Plug 'vim-scripts/DoxygenToolkit.vim', { 'for': 'cpp' }
 " cpp highlighting
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 
-" YouCompleteMe
-" if has("python")
-function! BuildYCM(info)
-  if a:info.status == 'installed' || a:info.force
-    !./install.py --clang-completer --tern-completer
-  endif
-endfunction
+" Code completion
+Plug 'ajh17/VimCompletesMe', { 'for': ['sh', 'c', 'cpp', 'bash', 'python'] }
 
-Plug 'Valloric/YouCompleteMe', { 'for': ['sh', 'c', 'cpp', 'cs', 'python'], 'do': function('BuildYCM') }
-    " --racer-completer if you want rust
 " endif
 call plug#end()
 " #end plugins ---------------------------------------------------------------
@@ -104,8 +97,15 @@ cnoreabbrev Q q
 command! Qa :qa!
 
 " Ctags
-nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages<CR>
-set tags=$VIRTUAL_ENV/tags
+set tags=tags
+
+" netrw
+nmap <F6> :Lexplore<CR>
+let g:netrw_list_hide= '.*\.BIN$,.*\.LIB$,.*\.OBJ$,.*\.IMAGE$'
+let g:netrw_hide = 1
+let g:netrw_banner=0
+let g:netrw_winsize=20
+let g:netrw_liststyle=3
 
 syntax on
 colorscheme onedark
@@ -142,60 +142,7 @@ let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#fnamemod=':t'
 
-" YouCompleteMe
-let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
-let g:ycm_python_binary_path = '/usr/bin/python3'
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_extra_conf_globlist=['~/.vim/*']
-let g:ycm_seed_identifiers_with_syntax = 1 " Completion for programming language's keyword
-let g:ycm_always_populate_location_list = 0
-let g:ycm_auto_trigger=1
-let g:ycm_enable_diagnostic_highlighting=1
-let g:ycm_enable_diagnostic_signs=1
-let g:ycm_max_diagnostics_to_display=10000
-let g:ycm_min_num_identifier_candidate_chars=0
-let g:ycm_min_num_of_chars_for_completion=2
-let g:ycm_open_loclist_on_ycm_diags=1
-let g:ycm_show_diagnostics_ui=1
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_filetype_blacklist={
-            \ 'vim' : 1,
-            \ 'tagbar' : 1,
-            \ 'qf' : 1,
-            \ 'notes' : 1,
-            \ 'markdown' : 1,
-            \ 'md' : 1,
-            \ 'unite' : 1,
-            \ 'text' : 1,
-            \ 'vimwiki' : 1,
-            \ 'pandoc' : 1,
-            \ 'infolog' : 1,
-            \ 'mail' : 1
-            \}
-"
-" YouCompleteMe Omni-Completion
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" YouCompleteMe key bindings
-nnoremap <F11> :YcmForceCompileAndDiagnostics<CR>
-nnoremap <F12> :YcmDiags<CR>
-
-" YcmCompleter Subcommands
-nnoremap <silent> <Leader>yd :YcmCompleter GetDoc<CR>
-nnoremap <silent> <Leader>yf :YcmCompleter FixIt<CR>
-nnoremap <silent> <Leader>yg :YcmCompleter GoTo<CR>
-nnoremap <silent> <Leader>yi :YcmCompleter GoToInclude<CR>
-nnoremap <silent> <Leader>yt :YcmCompleter GetType<CR>
-
-" python3 << EOF
-" import sys, vim, os
-
-" ve_dir = vim.eval('$VIRTUAL_ENV')
-" ve_dir in sys.path or sys.path.insert(0, ve_dir)
-" activate_this = os.path.join(os.path.join(ve_dir, 'bin'), 'activate_this.py')
-" EOF
+" ctags -f $VIRTUAL_ENV/tags -R $VIRTUAL_ENV/lib/python2.7/site-packages ${PWD} &> /dev/null & disown
 
 " AutoFormat
 let g:formatdef_clangformat='"clang-format -style=file"'
@@ -209,3 +156,7 @@ let g:formatdef_clangformat='"clang-format -style=file"'
 " Italics
 highlight Comment cterm=italic
 highlight htmlArg cterm=italic
+
+" Think about getting rid of these later.
+nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages<CR>
+nnoremap <F11> :set tags=$VIRTUAL_ENV/tags<CR>

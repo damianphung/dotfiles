@@ -142,8 +142,6 @@ let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#fnamemod=':t'
 
-" ctags -f $VIRTUAL_ENV/tags -R $VIRTUAL_ENV/lib/python2.7/site-packages ${PWD} &> /dev/null & disown
-
 " AutoFormat
 let g:formatdef_clangformat='"clang-format -style=file"'
 
@@ -156,6 +154,10 @@ let g:formatdef_clangformat='"clang-format -style=file"'
 " Italics
 highlight Comment cterm=italic
 highlight htmlArg cterm=italic
+
+" Hotkeys
+" Run python on the current buffer
+nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<CR>
 
 " Think about getting rid of these later.
 nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages<CR>

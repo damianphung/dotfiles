@@ -67,6 +67,7 @@ set showmode                    " Show current mode
 set autoread                    " Auto reload
 set ttyfast                     " Fast terminal
 set encoding=utf-8
+set paste
 set pastetoggle=<F10>
 nnoremap <F10> :set invpaste paste?<CR>
 set ignorecase      " Ignore case when searching

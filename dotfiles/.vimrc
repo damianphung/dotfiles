@@ -36,9 +36,19 @@ Plug 'ajh17/VimCompletesMe', { 'for': ['sh', 'c', 'cpp', 'bash', 'python'] }
 call plug#end()
 " #end plugins ---------------------------------------------------------------
 
-" The goodies
 syntax enable
-set nofoldenable
+
+"set nofoldenable
+
+set foldmethod=syntax
+" z+o opens a fold at the cursor.
+" z+Shift+o opens all folds at the cursor.
+" z+c closes a fold at the cursor.
+" z+m increases the foldlevel by one.
+" z+Shift+m closes all open folds.
+" z+r decreases the foldlevel by one.
+" z+Shift+r all folds will be open."
+
 " Leader key '-'
 let mapleader = ","
 
@@ -47,8 +57,6 @@ let mapleader = ","
 nnoremap <silent> <Tab> :bnext!<CR>
 " Shift Tab to cycle backwards
 nnoremap <silent> <S-Tab> :bprevious!<CR>
-" Ctrl-w to remove current buffer
-"nnoremap <silent> <C-w> :bd<CR>
 "
 nnoremap <C-Left> :resize -10<CR>
 nnoremap <C-Right> :resize 10<CR>
@@ -59,17 +67,18 @@ nnoremap <C-Down> :vertical resize -10<CR>
 nnoremap \ :Ag<SPACE>
 
 filetype plugin indent on       " Enable file type support
-set completeopt-=preview   " don't show preview window
+set completeopt-=preview        " don't show preview window
 
 set colorcolumn=80
 set showcmd                     " Show current command
 set showmode                    " Show current mode
 set autoread                    " Auto reload
 set ttyfast                     " Fast terminal
-set encoding=utf-8
-set paste
+set encoding=utf-8              " utf-8
+
 set pastetoggle=<F10>
 nnoremap <F10> :set invpaste paste?<CR>
+
 set ignorecase      " Ignore case when searching
 set ruler           " Always show current position
 set hlsearch        " Highlight all search results
@@ -77,14 +86,17 @@ set smartcase       " Enable smart-case search
 set incsearch       " Searches for strings incrementally
 set showmatch       " Highlight matching brace
 set visualbell      " Use visual bell (no beeping)
-set tabstop=4
-set shiftwidth=4
-set autoindent
-set cindent
-set softtabstop=4   " Number of spaces per Tab
+set tabstop=4       " number of spaces <tab>
+set shiftwidth=4    " << and >> indentation
 set expandtab
+set softtabstop=4   " Number of spaces per Tab
+
+set autoindent      " indentation
+set smartindent     " indentation
+
 set backspace=indent,eol,start
 set nu              " Line numbers
+
 " Remove Trailing Whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 " Remember line of file when closing.
@@ -105,7 +117,7 @@ nmap <F6> :Lexplore<CR>
 let g:netrw_list_hide= '.*\.BIN$,.*\.LIB$,.*\.OBJ$,.*\.IMAGE$'
 let g:netrw_hide = 1
 let g:netrw_banner=0
-let g:netrw_winsize=20
+let g:netrw_winsize=15
 let g:netrw_liststyle=3
 
 syntax on
@@ -130,9 +142,7 @@ nnoremap <C-H> <C-W><C-H>
 nnoremap <silent> <C-p> :Files<CR>
 
 " Tagbar
-nnoremap <F8> :TagbarToggle<CR>
 let g:tagbar_autofocus=0
-"let g:tagbar_left=1
 let g:tagbar_right=1
 let g:tagbar_width=35
 
@@ -143,22 +153,23 @@ let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#fnamemod=':t'
 
+" ctags -f $VIRTUAL_ENV/tags -R $VIRTUAL_ENV/lib/python2.7/site-packages ${PWD} &> /dev/null & disown
+
 " AutoFormat
 let g:formatdef_clangformat='"clang-format -style=file"'
-
-" Get off my lawn
-"nnoremap <Left> :echoe "<- Use h"<CR>
-"nnoremap <Right> :echoe "-> Use l"<CR>
-"nnoremap <Up> :echoe "^ Use k"<CR>
-"nnoremap <Down> :echoe "v Use j"<CR>
 
 " Italics
 highlight Comment cterm=italic
 highlight htmlArg cterm=italic
 
-" Hotkeys
-" Run python on the current buffer
-nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<CR>
+" ==  Hot keys ==
+    "  File explorer netrw
+    " Run python on the current buffer
+autocmd filetype python nnoremap <buffer> <F5> :w <bar> exec '!python '.shellescape(@%, 1)<CR>
+
+    " Tagbar
+nnoremap <F8> :TagbarToggle<CR>
+
 
 " Think about getting rid of these later.
 nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages<CR>

@@ -79,6 +79,7 @@ set encoding=utf-8              " utf-8
 set pastetoggle=<F10>
 nnoremap <F10> :set invpaste paste?<CR>
 
+set nu              " Line numbers
 set ignorecase      " Ignore case when searching
 set ruler           " Always show current position
 set hlsearch        " Highlight all search results
@@ -87,15 +88,11 @@ set incsearch       " Searches for strings incrementally
 set showmatch       " Highlight matching brace
 set visualbell      " Use visual bell (no beeping)
 set tabstop=4       " number of spaces <tab>
-set shiftwidth=4    " << and >> indentation
 set expandtab
+set shiftwidth=4    " << and >> indentation
 set softtabstop=4   " Number of spaces per Tab
-
 set autoindent      " indentation
-set smartindent     " indentation
-
 set backspace=indent,eol,start
-set nu              " Line numbers
 
 " Remove Trailing Whitespace
 autocmd BufWritePre * :%s/\s\+$//e

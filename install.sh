@@ -7,6 +7,7 @@ sudo apt upgrade
 sudo apt install -y \
     build-essential \
     clang \
+    clang-format \
     curl \
     cmake \
     doxygen \

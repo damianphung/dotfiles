@@ -18,16 +18,21 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
 Plug 'junegunn/fzf.vim'
 
-" debugger UI toolkit
-Plug 'snare/voltron', { 'do' : './install.sh -u' }
-
-" Formatting of cpp
+" Formatting of cpp : requires clang-format
 Plug 'rhysd/vim-clang-format', {'for': 'cpp'}
 
 " Doxygen ; :Dox to activate
 Plug 'vim-scripts/DoxygenToolkit.vim', { 'for': 'cpp' }
+Plug 'heavenshell/vim-pydocstring', { 'for' : 'python' }
+
 " cpp highlighting
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+
+" Python virtualenv
+Plug 'plytophogy/vim-virtualenv'
+
+" 'hybrid' line numbers
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
 " Code completion
 Plug 'ajh17/VimCompletesMe', { 'for': ['sh', 'c', 'cpp', 'bash', 'python'] }
@@ -57,17 +62,12 @@ let mapleader = ","
 nnoremap <silent> <Tab> :bnext!<CR>
 " Shift Tab to cycle backwards
 nnoremap <silent> <S-Tab> :bprevious!<CR>
-"
-nnoremap <C-Left> :resize -10<CR>
-nnoremap <C-Right> :resize 10<CR>
-nnoremap <C-Up> :vertical resize 10<CR>
-nnoremap <C-Down> :vertical resize -10<CR>
 
 " '\' to Ag
 nnoremap \ :Ag<SPACE>
 
 filetype plugin indent on       " Enable file type support
-set completeopt-=preview        " don't show preview window
+"set completeopt-=preview        " don't show preview window
 
 set colorcolumn=80
 set showcmd                     " Show current command
@@ -75,24 +75,23 @@ set showmode                    " Show current mode
 set autoread                    " Auto reload
 set ttyfast                     " Fast terminal
 set encoding=utf-8              " utf-8
+set nu                          " Line numbers
+set ignorecase                  " Ignore case when searching
+set ruler                       " Always show current position
+set hlsearch                    " Highlight all search results
+set smartcase                   " Enable smart-case search
+set incsearch                   " Searches for strings incrementally
+set showmatch                   " Highlight matching brace
+set visualbell                  " Use visual bell (no beeping)
+set tabstop=4                   " number of spaces <tab>
+set expandtab
+set shiftwidth=4                " << and >> indentation
+set softtabstop=4               " Number of spaces per Tab
+set autoindent                  " indentation
+set backspace=indent,eol,start
 
 set pastetoggle=<F10>
 nnoremap <F10> :set invpaste paste?<CR>
-
-set nu              " Line numbers
-set ignorecase      " Ignore case when searching
-set ruler           " Always show current position
-set hlsearch        " Highlight all search results
-set smartcase       " Enable smart-case search
-set incsearch       " Searches for strings incrementally
-set showmatch       " Highlight matching brace
-set visualbell      " Use visual bell (no beeping)
-set tabstop=4       " number of spaces <tab>
-set expandtab
-set shiftwidth=4    " << and >> indentation
-set softtabstop=4   " Number of spaces per Tab
-set autoindent      " indentation
-set backspace=indent,eol,start
 
 " Remove Trailing Whitespace
 autocmd BufWritePre * :%s/\s\+$//e
@@ -139,6 +138,7 @@ nnoremap <C-H> <C-W><C-H>
 nnoremap <silent> <C-p> :Files<CR>
 
 " Tagbar
+nnoremap <F8> :TagbarToggle<CR>
 let g:tagbar_autofocus=0
 let g:tagbar_right=1
 let g:tagbar_width=35
@@ -150,24 +150,35 @@ let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#fnamemod=':t'
 
-" ctags -f $VIRTUAL_ENV/tags -R $VIRTUAL_ENV/lib/python2.7/site-packages ${PWD} &> /dev/null & disown
-
-" AutoFormat
-let g:formatdef_clangformat='"clang-format -style=file"'
 
 " Italics
 highlight Comment cterm=italic
 highlight htmlArg cterm=italic
 
-" ==  Hot keys ==
-    "  File explorer netrw
-    " Run python on the current buffer
+" == Python ==
+" Run python on the current buffer
 autocmd filetype python nnoremap <buffer> <F5> :w <bar> exec '!python '.shellescape(@%, 1)<CR>
 
-    " Tagbar
-nnoremap <F8> :TagbarToggle<CR>
+" ctags and virtual env settings
+autocmd filetype python nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages ${PWD} &> /dev/null & disown<CR>
+autocmd filetype python nnoremap ,t :set tags=$VIRTUAL_ENV/tags<CR>
+autocmd filetype python nnoremap ,l :VirtualEnvList<CR>
+autocmd filetype python nnoremap ,m :Pydocstring <CR>
 
+" == C / C++ ==
+" AutoFormat
+let g:formatdef_clangformat='"clang-format -style=file"'
+let g:clang_format#style_options = {
+           \ "AccessModifierOffset" : -4,
+           \ "AllowShortIfStatementsOnASingleLine" : "true",
+           \ "AlwaysBreakTemplateDeclarations" : "true",
+           \ "Standard" : "C++11"}
+" ',' + 'cf'
+autocmd fileType c,cpp nnoremap <buffer> ,cf :<C-u>ClangFormat<CR>
+autocmd fileType c,cpp ClangFormatAutoEnable
 
-" Think about getting rid of these later.
-nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages<CR>
-nnoremap <F11> :set tags=$VIRTUAL_ENV/tags<CR>
+" handy build hotkey to test something real quick.
+autocmd filetype c     nnoremap <F5> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
+autocmd filetype cpp   nnoremap <F5> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
+" Doxygen
+autocmd filetype c,cpp nnoremap ,m :Dox <CR>

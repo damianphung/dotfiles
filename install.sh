@@ -29,6 +29,13 @@ sudo apt install -y \
     python-dev \
     python3-dev \
     python3-setuptools \
+    gcc make \
+    pkg-config autoconf automake \
+    python3-docutils \
+    libseccomp-dev \
+    libjansson-dev \
+    libyaml-dev \
+    libxml2-dev \
     zsh
 sudo npm install -g jslint
 sudo ln -fs /usr/bin/node{js,}
@@ -39,11 +46,23 @@ if ! [ -f "$HOME/.vim/autoload/plug.vim" ]; then
     curl -fLo "$HOME/.vim/autoload/plug.vim" "https://raw.github.com/junegunn/vim-plug/master/plug.vim"
 fi
 
+## tmux
 git clone "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm"
 cp -vf ./dotfiles/\.* "$HOME/"
 cp -vf ./tmux_workspace/* "$HOME/.tmux/"
 cp -vf "tmux.terminfo" "$HOME/tmux.terminfo"
 sudo tic -x $HOME/tmux.terminfo
+
+
+## universal ctags
+cd ~/
+git clone https://github.com/universal-ctags/ctags.git
+cd ctags
+./autogen.sh 
+./configure
+make
+sudo make install
+
 
 # install zsh
 sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
@@ -56,19 +75,6 @@ cd fonts
 cd ..
 rm -rf fonts
 cp -vf ./zshrc/.zshrc "$HOME/"
-
-
-# Pass --full argument to this script for a "full" install
-if [ "$1" = "--full" ]; then
-    # Developer packages
-    sudo apt install -y \
-        bzip2 \
-        libboost-all-dev \
-        libncurses5-dev \
-        libsqlite3-dev \
-        python-dev \
-        python3-dev
-fi
 
 vim -c "PlugInstall"
 

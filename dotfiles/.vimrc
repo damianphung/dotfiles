@@ -98,7 +98,10 @@ autocmd BufWritePre * :%s/\s\+$//e
 " Remember line of file when closing.
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-  au BufWriteCmd * write | :silent exec '!echo \\n Found following lines containing non-ascii' | :silent exec '!grep --color=auto -P -n "[^[:ascii:]]" '.shellescape(@%, 1)
+  " Notify non-ascii characters on current buffer.
+  " TODO: Make it pretty; something like this
+  " :silent exec '!echo \\n Found following lines containing non-ascii' 
+  au BufWriteCmd * write | :silent exec '!grep --color=auto -P -n "[^[:ascii:]]" '.shellescape(@%, 1)
 endif
 
 " Typos

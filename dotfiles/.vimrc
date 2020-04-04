@@ -37,13 +37,39 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 " Code completion
 Plug 'ajh17/VimCompletesMe', { 'for': ['sh', 'c', 'cpp', 'bash', 'python'] }
 
+" Async plugin
+Plug 'skywind3000/asyncrun.vim'
+
+Plug 'fisadev/vim-isort'
+
 " endif
 call plug#end()
 " #end plugins ---------------------------------------------------------------
 
 syntax enable
+nnoremap <F5> :call <SID>compile_and_run()<CR>
+
+
+let g:vim_isort_python_version = 'python3'
+
+function! s:compile_and_run()
+    exec 'w'
+    if &filetype == 'c'
+        exec "AsyncRun! gcc % -o %<; time ./%<"
+    elseif &filetype == 'cpp'
+       exec "AsyncRun! g++ -std=c++11 % -o %<; time ./%<"
+    elseif &filetype == 'java'
+       exec "AsyncRun! javac %; time java %<"
+    elseif &filetype == 'sh'
+       exec "AsyncRun! time bash %"
+    elseif &filetype == 'python'
+       exec "AsyncRun! time python %"
+    endif
+endfunction
+let g:asyncrun_open = 10
 
 "set nofoldenable
+
 
 set foldmethod=syntax
 " z+o opens a fold at the cursor.
@@ -65,8 +91,8 @@ nnoremap <silent> <S-Tab> :bprevious!<CR>
 
 " '\' to Ag
 nnoremap \ :Ag<SPACE>
-
 filetype plugin indent on       " Enable file type support
+
 "set completeopt-=preview        " don't show preview window
 
 set colorcolumn=80
@@ -94,14 +120,10 @@ set pastetoggle=<F10>
 nnoremap <F10> :set invpaste paste?<CR>
 
 " Remove Trailing Whitespace
-autocmd BufWritePre * :%s/\s\+$//e
+"autocmd BufWritePre * :%s/\s\+$//e
 " Remember line of file when closing.
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-  " Notify non-ascii characters on current buffer.
-  " TODO: Make it pretty; something like this
-  " :silent exec '!echo \\n Found following lines containing non-ascii' 
-  au BufWriteCmd * write | :silent exec '!grep --color=auto -P -n "[^[:ascii:]]" '.shellescape(@%, 1)
 endif
 
 " Typos
@@ -109,8 +131,7 @@ cnoreabbrev W w
 cnoreabbrev Q q
 command! Qa :qa!
 
-" Ctags
-set tags=tags
+"set tags+=$HOME/site-packages/torch/tags
 
 " netrw
 nmap <F6> :Lexplore<CR>
@@ -159,13 +180,12 @@ let g:airline#extensions#tabline#fnamemod=':t'
 highlight Comment cterm=italic
 highlight htmlArg cterm=italic
 
-" == Python ==
-" Run python on the current buffer
-autocmd filetype python nnoremap <buffer> <F5> :w <bar> exec '!python '.shellescape(@%, 1)<CR>
-
+" Ctags
+set tags=./tags
+";,tags$HOME
 " ctags and virtual env settings
-autocmd filetype python nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.6/site-packages ${PWD} &> /dev/null & disown<CR>
-autocmd filetype python nnoremap ,t :set tags=$VIRTUAL_ENV/tags<CR>
+autocmd filetype python nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.7/site-packages ${PWD} &> /dev/null & disown<CR>
+autocmd filetype python nnoremap ,t :set tags+=$VIRTUAL_ENV/tags<CR>
 autocmd filetype python nnoremap ,l :VirtualEnvList<CR>
 autocmd filetype python nnoremap ,m :Pydocstring <CR>
 
@@ -179,10 +199,7 @@ let g:clang_format#style_options = {
            \ "Standard" : "C++11"}
 " ',' + 'cf'
 autocmd fileType c,cpp nnoremap <buffer> ,cf :<C-u>ClangFormat<CR>
-autocmd fileType c,cpp ClangFormatAutoEnable
+autocmd fileType cpp ClangFormatAutoEnable
 
-" handy build hotkey to test something real quick.
-autocmd filetype c     nnoremap <F5> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
-autocmd filetype cpp   nnoremap <F5> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
 " Doxygen
 autocmd filetype c,cpp nnoremap ,m :Dox <CR>

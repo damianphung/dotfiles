@@ -40,6 +40,7 @@ Plug 'ajh17/VimCompletesMe', { 'for': ['sh', 'c', 'cpp', 'bash', 'python'] }
 " Async plugin
 Plug 'skywind3000/asyncrun.vim'
 
+" Python sorter
 Plug 'fisadev/vim-isort'
 
 " endif
@@ -48,6 +49,7 @@ call plug#end()
 
 syntax enable
 nnoremap <F5> :call <SID>compile_and_run()<CR>
+nnoremap <F9> :call <SID>tagCheck()<CR>
 
 
 let g:vim_isort_python_version = 'python3'
@@ -67,6 +69,27 @@ function! s:compile_and_run()
     endif
 endfunction
 let g:asyncrun_open = 10
+
+set tags=./tags
+
+function! s:tagCheck()
+    if &filetype != 'python'
+        echo "not a python file"
+        return
+    endif
+
+    if empty($VIRTUAL_ENV)
+        echo "No virtual env set"
+        return
+    elseif filereadable(expand("$VIRTUAL_ENV/tags"))
+        echo "Setting tags"
+        set tags+=$VIRTUAL_ENV/tags
+    else
+        echo "AsyncRun ctags"
+        exec "AsyncRun! ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.7/site-packages ${PWD}"
+        set tags+=$VIRTUAL_ENV/tags
+    endif
+endfunction
 
 "set nofoldenable
 
@@ -180,11 +203,6 @@ let g:airline#extensions#tabline#fnamemod=':t'
 highlight Comment cterm=italic
 highlight htmlArg cterm=italic
 
-" Ctags
-set tags=./tags
-";,tags$HOME
-" ctags and virtual env settings
-autocmd filetype python nnoremap <F9> :!ctags -R -f $VIRTUAL_ENV/tags $VIRTUAL_ENV/lib/python3.7/site-packages ${PWD} &> /dev/null & disown<CR>
 autocmd filetype python nnoremap ,t :set tags+=$VIRTUAL_ENV/tags<CR>
 autocmd filetype python nnoremap ,l :VirtualEnvList<CR>
 autocmd filetype python nnoremap ,m :Pydocstring <CR>

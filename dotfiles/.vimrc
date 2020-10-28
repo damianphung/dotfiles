@@ -221,3 +221,5 @@ autocmd fileType cpp ClangFormatAutoEnable
 
 " Doxygen
 autocmd filetype c,cpp nnoremap ,m :Dox <CR>
+
+nnoremap ,<Space> :set tabstop=4 shiftwidth=4 expandtab | retab<CR>

@@ -64,17 +64,23 @@ make
 sudo make install
 cd ~/
 
-# install zsh
-sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
-# Themes for zsh
-git clone https://github.com/powerline/fonts.git
-# install
-cd fonts
-./install.sh
+# httpstat 
+mkdir -p $HOME/bin
+wget https://raw.githubusercontent.com/reorx/httpstat/master/httpstat.py "$HOME/bin"
+chmod +x "$HOME/bin/httpstat.py"
+
+##
+## install zsh
+# sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+## Themes for zsh
+# git clone https://github.com/powerline/fonts.git
+## install
+# cd fonts
+# ./install.sh
 # clean-up a bit
-cd ..
-rm -rf fonts
-cp -vf ./zshrc/.zshrc "$HOME/"
+# cd ..
+# rm -rf fonts
+# cp -vf ./zshrc/.zshrc "$HOME/"
 
 vim -c "PlugInstall"
 
